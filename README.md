@@ -25,8 +25,11 @@ dotnet run
 start YugabyteDB on same port / address as PostgreSQL
 
 ```
-docker run -d -p5432:5433 yugabytedb/yugabyte yugabyted start --background=false --tserver_flags=yb_enable_read_committed_isolation=true
+docker run -d -p5432:5433 -p 15433:15433 yugabytedb/yugabyte yugabyted start --background=false --tserver_flags=yb_enable_read_committed_isolation=true,ysql_pg_conf_csv="{shared_preload_libraries='auto_explain',log_statement='all'}"
+
 type pg_isready 2>/dev/null && until pg_isready ; do sleep 1 ; done | uniq -c
+# tail -F /root/var/data/yb-data/tserver/logs/postgresql*
+
 ```
 
 Run
